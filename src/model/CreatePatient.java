@@ -25,17 +25,23 @@ public class CreatePatient {
 			System.out.print("Apellido: ");
 			String lastName = console.nextLine();
 
-			System.out.print("Estado: ");
-			Status status = Status.valueOf(Status.toUpperCase());
+			System.out.print("Estado: ACTIVO\n");
+			Status status = Status.ACTIVE;
 
-			patients.add(new Patient(contactPhoneNumber, firstName, lastName, status));
+			Patient patient = new Patient();
+			patient.setContactPhoneNumber(contactPhoneNumber);
+			patient.setFirstName(firstName);
+			patient.setLastName(lastName);
+			patient.setStatus(status);
+
+			patients.add(patient);
 		}
 
 		System.out.println("\nLista de pacientes:");
 		for (Patient patient : patients) {
 			System.out.println(
 					"Numero de Telefono: " + patient.getContactPhoneNumber() + " | Nombre: " + patient.getFirstName()
-							+ " | Apellido: " + patient.getLastName() + " | Estado: " + patient.getStatus());
+							+ " | Apellido: " + patient.getLastName() + " | Estado: " + patient.getStatus().getName());
 		}
 	}
 }
