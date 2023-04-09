@@ -1,7 +1,7 @@
-package co.uptc.edu.HospitalService.presenter;
+package presenter;
 
-import co.uptc.edu.HospitalService.view.View;
-import co.uptc.edu.HospitalService.model.Patient;
+import view.*;
+import model.*;
 import javax.swing.JOptionPane;
 
 public class Presenter {
