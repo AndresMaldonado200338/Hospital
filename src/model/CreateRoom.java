@@ -40,9 +40,7 @@ public class CreateRoom {
             rooms.add(room);
             System.out.println("\nLista de habitaciones:");
             for (Room room1 : rooms) {
-                System.out.println("Numero de piso: " + room1.getFloorNumber() + " | Numero de habitacion: "
-                        + room1.getRoomNumber() + " | ID de habitacion: " + room1.getId() + " | Numero de camas: "
-                        + room1.getBedNumbers());
+                System.out.println(room1.toString());
             }
         }
     }
