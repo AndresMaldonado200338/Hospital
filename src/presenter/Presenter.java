@@ -33,6 +33,7 @@ public class Presenter {
 					break;
 				case 5:
 					view.showGraphicMessage("----Adios----");
+					System.exit(0);
 					break;
 				default:
 					view.showErrorMessage("OPCION NO VALIDA");
@@ -49,40 +50,39 @@ public class Presenter {
 	public void createRoom() {
 		String menu = "       ...CREAR UNA HABITACION...      " + "\n1 - Ingrese ID\n2 - Ingrese número de piso"
 				+ "\n3 - Ingrese el número de habitación"
-				+ "\n4 - Ingrese el número de camas\n5 - Salir";
+				+ "\n4 - Ingrese el número de camas";
+		view.showGraphicMessage(menu);
 		Room room = new Room();
-		try {
-			int option = view.readGraphicInt(menu + "\nSeleccione una opción:");
-			switch (option) {
-				case 1:
-					createRoom();
-					break;
-				case 2:
-					createRoom();
-					break;
-				case 3:
-					createRoom();
-					break;
-				case 4:
-					createRoom();
-					break;
-				case 5:
-					break;
-				default:
-					view.showErrorMessage("OPCION NO VALIDA");
-					createRoom();
-					break;
+		room.setId(view.readGraphicShort("Ingrese ID:"));
+		if (hospital.getRooms().isEmpty()) {
+			room.setFloorNumber(view.readGraphicShort("Ingrese número de piso:"));
+			room.setRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"));
+			room.setBedNumbers(view.readGraphicShort("Ingrese el número de camas:"));
+			hospital.addRoom(room);
+			view.showGraphicMessage(hospital.getRooms().toString());
+			init();
+		} else{
+			for (int i = 0; i < hospital.getRooms().size(); i++) {
+				if (hospital.getRooms().get(i).getId() != room.getId()) {
+					room.setFloorNumber(view.readGraphicShort("Ingrese número de piso:"));
+					room.setRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"));
+					room.setBedNumbers(view.readGraphicShort("Ingrese el número de camas:"));
+					hospital.addRoom(room);
+					init();
+				} else {
+					view.showErrorMessage("ID YA EXISTENTE");
+					init();
+				}
 			}
-		} catch (Exception e) {
-			view.showErrorMessage("OPCION NO VALIDA");
-			createRoom();
 		}
+		init();
 	}
 
 	public void createPatient() {
 		String menu = "       ...CREAR PACIENTE...      "
 				+ "\n1 - Ingrese numero de habitacion\n2 - Ingrese nombre del paciente"
 				+ "\n3 - Ingrese apellido del paciente" + "\n4 - Ingrese telefono de contacto\n5 - Salir";
+
 	}
 
 	public void showHistorial() {
