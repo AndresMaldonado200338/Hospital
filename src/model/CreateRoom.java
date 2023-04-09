@@ -40,7 +40,7 @@ public class CreateRoom {
             rooms.add(room);
             System.out.println("\nLista de habitaciones:");
             for (Room room1 : rooms) {
-                System.out.println(room.toString());
+                System.out.println(room1.toString());
             }
         }
     }
