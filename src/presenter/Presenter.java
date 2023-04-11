@@ -22,13 +22,16 @@ public class Presenter {
 					createRoom();
 					break;
 				case 2:
-					createPatient();
+					view.showGraphicMessage("Opcion 2");
+					init();
 					break;
 				case 3:
-					showHistorial();
+					view.showGraphicMessage("Opcion 3");
+					init();
 					break;
 				case 4:
-					createXML();
+					view.showGraphicMessage("Opcion 4");
+					init();
 					break;
 				case 5:
 					view.showGraphicMessage("----Adios----");
@@ -144,72 +147,7 @@ public class Presenter {
 		return roomNumber;
 	}
 
-	public void createPatient() {
-		String menu = "       ...CREAR PACIENTE...      "
-				+ "\n1 - Ingrese numero de habitacion\n2 - Ingrese nombre del paciente"
-				+ "\n3 - Ingrese apellido del paciente" + "\n4 - Ingrese telefono de contacto\n5 - Salir";
-		view.showGraphicMessage(menu);
-		Patient patient = new Patient();
-		short floorNumber = view.readGraphicShort("Ingrese numero de piso");
-		short roomNumber = view.readGraphicShort("Ingrese numero de habitacion:");
-		Room roomToPatient = validatePatientRoomNumber(floorNumber, roomNumber);
-		validateBedForPatients(roomToPatient);
-		patient.setFirstName(view.readGraphicString("Ingrese nombre del paciente:"));
-		patient.setLastName(view.readGraphicString("Ingrese apellido del paciente:"));
-		patient.setContactPhoneNumber(view.readGraphicString("Ingrese telefono de contacto:"));
-		patient.setStatus(Status.ACTIVE);
-		roomToPatient.addPatient(patient);
-		view.showGraphicMessage("PACIENTE CREADO");
-		view.showGraphicMessage(roomToPatient.getPatients().toString());
-		init();
-	}
 
-	/**
-	 * Metodo que valida si existe la habitacion donde se va a ingresar el paciente
-	 * 
-	 * @param floorNumber
-	 * @param roomNumber
-	 * @return room si existe, de lo contrario vuelve a menu principal
-	 */
-	public Room validatePatientRoomNumber(short floorNumber, short roomNumber) {
-		for (Room room : hospital.getRooms()) {
-			if (room.getFloorNumber() == floorNumber && room.getRoomNumber() == roomNumber) {
-				return room;
-			}
-		}
-		view.showErrorMessage("HABITACION NO EXISTE");
-		init();
-		return null;
-	}
-
-	/**
-	 * Metodo que valida si la habitacion tiene camas disponibles
-	 * @param room
-	 */
-	public void validateBedForPatients(Room room) {
-		if (room.getBedNumbers() > room.getPatients().size()) {
-			view.showGraphicMessage("HABITACION DISPONIBLE");
-		} else {
-			view.showErrorMessage("HABITACION LLENA");
-			init();
-		}
-	}
-
-	public void showHistorial() {
-		String menu = "       ...HISTORIAL...      "
-				+ "\n1 - Ingrese numero de piso\n2 - Ingrese numero de habitacion";
-		view.showGraphicMessage(menu);
-		short floorNumber = view.readGraphicShort("Ingrese numero de piso");
-		short roomNumber = view.readGraphicShort("Ingrese numero de habitacion:");
-		Room room = validatePatientRoomNumber(floorNumber, roomNumber);
-		view.showGraphicMessage("HISTORIAL DE PACIENTES" + "\nHabitacion " + room.getFloorNumber() + "0" + room.getRoomNumber());
-		view.showGraphicMessage(room.getPatients().toString());
-		init();
-	}
-
-	public void createXML() {
-
-	}
 
 	public static void main(String[] args) {
 		new Presenter();
