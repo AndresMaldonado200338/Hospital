@@ -35,7 +35,8 @@ public class Patient {
 	}
 
 	public void setStatus(Status status) {
-		this.status = status;
-	}
+        status = Status.ACTIVE;
+        this.status = status;
+    }
 
 }
