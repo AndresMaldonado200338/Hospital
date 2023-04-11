@@ -53,30 +53,88 @@ public class Presenter {
 				+ "\n4 - Ingrese el número de camas";
 		view.showGraphicMessage(menu);
 		Room room = new Room();
-		room.setId(view.readGraphicShort("Ingrese ID:"));
-		if (hospital.getRooms().isEmpty()) {
-			room.setFloorNumber(view.readGraphicShort("Ingrese número de piso:"));
-			room.setRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"));
-			room.setBedNumbers(view.readGraphicShort("Ingrese el número de camas:"));
-			hospital.addRoom(room);
-			view.showGraphicMessage(hospital.getRooms().toString());
-			init();
-		} else{
-			for (int i = 0; i < hospital.getRooms().size(); i++) {
-				if (hospital.getRooms().get(i).getId() != room.getId()) {
-					room.setFloorNumber(view.readGraphicShort("Ingrese número de piso:"));
-					room.setRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"));
-					room.setBedNumbers(view.readGraphicShort("Ingrese el número de camas:"));
-					hospital.addRoom(room);
-					init();
-				} else {
-					view.showErrorMessage("ID YA EXISTENTE");
-					init();
-				}
-			}
-		}
+		room.setId(validateId(view.readGraphicShort("Ingrese ID:")));
+		room.setFloorNumber(validateFloorNumber(view.readGraphicShort("Ingrese número de piso:")));
+		room.setRoomNumber(validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), room.getFloorNumber()));
+		room.setBedNumbers(validateBedNumbers(view.readGraphicShort("Ingrese el número de camas:")));
+		hospital.addRoom(room);
+		view.showGraphicMessage(hospital.getRooms().toString());
 		init();
 	}
+
+	public short validateId(short id) {
+		if (hospital.getRooms().isEmpty()) {
+			return id;
+		} else {
+			boolean idExist = false;
+			for (Room room : hospital.getRooms()) {
+				if (room.getId() == id) {
+					idExist = true;
+					break;
+				}
+			}
+			if (idExist) {
+				view.showErrorMessage("ID YA EXISTE");
+				return validateId(view.readGraphicShort("Ingrese ID:"));
+			} else {
+				return id;
+			}
+		}
+	}
+
+	/**
+	 * Metodo que valida si el numero de piso es valido
+	 * 
+	 * @param floorNumber
+	 * @return floorNumber si es valido, de lo contrario vuelve a solicitar un valor
+	 *         para el piso
+	 */
+	public short validateFloorNumber(short floorNumber) {
+		if (floorNumber > 0 && floorNumber <= 30) {
+			return floorNumber;
+		} else {
+			view.showErrorMessage("NUMERO DE PISO NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 30");
+			return validateFloorNumber(view.readGraphicShort("Ingrese número de piso:"));
+		}
+	}
+
+	/**
+	 * Metodo que valida si el numero de camas es valido
+	 * 
+	 * @param bedNumbers
+	 * @return bedNumbers si es valido, de lo contrario vuelve a solicitar un valor para el numero de camas
+	 */
+	public short validateBedNumbers(short bedNumbers) {
+		if (bedNumbers > 0 && bedNumbers <= 5) {
+			return bedNumbers;
+		} else {
+			view.showErrorMessage("NUMERO DE CAMAS NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 5");
+			return validateBedNumbers(view.readGraphicShort("Ingrese el número de camas:"));
+		}
+	}
+
+	/**
+	 * Metodo que valida si el numero de habitacion es valido
+	 * 
+	 * @param roomNumber
+	 * @return roomNumber si es valido, de lo contrario vuelve a solicitar un valor
+	 */
+	public short validateRoomNumber(short roomNumber, short floorNumber) {
+    if (roomNumber <= 0 || roomNumber > 10) {
+        view.showErrorMessage("NUMERO DE HABITACION NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 10");
+        return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
+    }
+    if (hospital.getRooms().isEmpty()) {
+        return roomNumber;
+    }
+    for (Room room : hospital.getRooms()) {
+        if (room.getFloorNumber() == floorNumber && room.getRoomNumber() == roomNumber) {
+            view.showErrorMessage("HABITACION YA EXISTENTE");
+            return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
+        }
+    }
+    return roomNumber;
+}
 
 	public void createPatient() {
 		String menu = "       ...CREAR PACIENTE...      "
