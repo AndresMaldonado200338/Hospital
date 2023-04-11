@@ -2,96 +2,187 @@ package presenter;
 
 import view.*;
 import model.*;
-import javax.swing.JOptionPane;
 
 public class Presenter {
-	Patient newPatient = new Patient();
+	Hospital hospital = new Hospital();
 	View view = new View();
 
 	public Presenter() {
+		init();
+	}
 
-		String[] options = { "1 Crear una habitación", "2 Crear un paciente",
-				"3 Mostrar el Historial de pacientes pot Habitación", "4 Generar XML", "5 Salir" };
-
-		int selection = 0;
-
-		while (selection < 1 || selection > 5) {
-			String selectedOption = JOptionPane.showInputDialog(null,
-					"       .....BIENVENIDOS A HOSPITAPP.....      "
-							+ "\n1 - Crear una habitación\n2 - Crear un paciente"
-							+ "\n3 - Mostrar el Historial de pacientes por Habitación" + "\n4 - Generar XML\n5 - Salir",
-					"HOSPITAPP", JOptionPane.PLAIN_MESSAGE);
-
-			try {
-				selection = Integer.parseInt(selectedOption);
-			} catch (NumberFormatException e) {
-				selection = 0;
+	public void init() {
+		String menu = "       .....BIENVENIDOS A HOSPITAPP.....      "
+				+ "\n1 - Crear una habitación\n2 - Crear un paciente"
+				+ "\n3 - Mostrar el Historial de pacientes por Habitación" + "\n4 - Generar XML\n5 - Salir";
+		try {
+			int option = view.readGraphicInt(menu + "\nSeleccione una opción:");
+			switch (option) {
+				case 1:
+					createRoom();
+					break;
+				case 2:
+					createPatient();
+					break;
+				case 3:
+					showHistorial();
+					break;
+				case 4:
+					createXML();
+					break;
+				case 5:
+					view.showGraphicMessage("----Adios----");
+					System.exit(0);
+					break;
+				default:
+					view.showErrorMessage("OPCION NO VALIDA");
+					init();
+					break;
 			}
-			if (selection < 1 || selection > 5) {
-				JOptionPane.showMessageDialog(null, "Opción no válida");
+		} catch (Exception e) {
+			view.showErrorMessage("OPCION NO VALIDA");
+			init();
+		}
+
+	}
+
+	public void createRoom() {
+		String menu = "       ...CREAR UNA HABITACION...      " + "\n1 - Ingrese ID\n2 - Ingrese número de piso"
+				+ "\n3 - Ingrese el número de habitación"
+				+ "\n4 - Ingrese el número de camas";
+		view.showGraphicMessage(menu);
+		Room room = new Room();
+		room.setId(validateId(view.readGraphicShort("Ingrese ID:")));
+		room.setFloorNumber(validateFloorNumber(view.readGraphicShort("Ingrese número de piso:")));
+		room.setRoomNumber(
+				validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), room.getFloorNumber()));
+		room.setBedNumbers(validateBedNumbers(view.readGraphicShort("Ingrese el número de camas:")));
+		hospital.addRoom(room);
+		view.showGraphicMessage(hospital.getRooms().toString());
+		init();
+	}
+
+	/**
+	 * Metodo que valida la id de una habitacion
+	 * 
+	 * @param id
+	 * @return id si es valida, de lo contrario vuelve a solicitar un valor para la
+	 *         id
+	 */
+	public short validateId(short id) {
+		if (hospital.getRooms().isEmpty()) {
+			return id;
+		} else {
+			boolean idExist = false;
+			for (Room room : hospital.getRooms()) {
+				if (room.getId() == id) {
+					idExist = true;
+					break;
+				}
+			}
+			if (idExist) {
+				view.showErrorMessage("ID YA EXISTE");
+				return validateId(view.readGraphicShort("Ingrese ID:"));
+			} else {
+				return id;
 			}
 		}
-		switch (selection) {
-		case 1:
-			JOptionPane.showMessageDialog(null, "Has seleccionado la opción 1");
-			String[] options1 = { "1 Ingrese ID", "2 Ingrese Numero de piso", "3 Ingrese el numero de habitación",
-					"4 Ingrese el numero de camas", "5 Salir" };
-			int selection1 = 0;
+	}
 
-			while (selection1 < 1 || selection1 > 5) {
-				String selectedOption1 = JOptionPane.showInputDialog(null,
-						"       ...CREAR UNA HABITACION...      " + "\n1 - Ingrese ID\n2 - Ingrese número de piso"
-								+ "\n3 - Ingrese el número de habitación"
-								+ "\n4 - Ingrese el número de camas\n5 - Salir",
-						"Menú crear Habitación", JOptionPane.PLAIN_MESSAGE);
-
-				try {
-					selection1 = Integer.parseInt(selectedOption1);
-				} catch (NumberFormatException e) {
-					selection1 = 0;
-				}
-				if (selection1 < 1 || selection1 > 5) {
-					JOptionPane.showMessageDialog(null, "Opción no válida");
-				}
-
-			}
-			break;
-		case 2:
-			JOptionPane.showMessageDialog(null, "Has seleccionado la opción 2");
-			String[] options2 = { "1 Ingrese numero de habitacion", "2 Ingrese Nombre del paciente",
-					"3 Ingrese el appellido del paciente", "4 Ingrese telefono de contacto", "5 Salir" };
-			int selection2 = 0;
-
-			while (selection2 < 1 || selection2 > 5) {
-				String selectedOption2 = JOptionPane.showInputDialog(null, "       ...CREAR PACIENTE...      "
-						+ "\n1 - Ingrese numero de habitacion\n2 - Ingrese nombre del paciente"
-						+ "\n3 - Ingrese apellido del paciente" + "\n4 - Ingrese telefono de contacto\n5 - Salir",
-						"Menú crear nuevo paciente", JOptionPane.PLAIN_MESSAGE);
-
-				try {
-					selection2 = Integer.parseInt(selectedOption2);
-				} catch (NumberFormatException e) {
-					selection1 = 0;
-				}
-				if (selection2 < 1 || selection2 > 5) {
-					JOptionPane.showMessageDialog(null, "Opción no válida");
-				}
-
-			}
-			break;
-		case 3:
-			JOptionPane.showMessageDialog(null, "Has seleccionado la opción 3");
-			break;
-		case 4:
-			JOptionPane.showMessageDialog(null, "Has seleccionado la opción 4");
-		case 5:
-			JOptionPane.showMessageDialog(null, "Sesion Finalizada!");
-			break;
-
-		default:
-			JOptionPane.showMessageDialog(null, "Opción no válida");
-			break;
+	/**
+	 * Metodo que valida si el numero de piso es valido
+	 * 
+	 * @param floorNumber
+	 * @return floorNumber si es valido, de lo contrario vuelve a solicitar un valor
+	 *         para el piso
+	 */
+	public short validateFloorNumber(short floorNumber) {
+		if (floorNumber > 0 && floorNumber <= 30) {
+			return floorNumber;
+		} else {
+			view.showErrorMessage("NUMERO DE PISO NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 30");
+			return validateFloorNumber(view.readGraphicShort("Ingrese número de piso:"));
 		}
+	}
+
+	/**
+	 * Metodo que valida si el numero de camas es valido
+	 * 
+	 * @param bedNumbers
+	 * @return bedNumbers si es valido, de lo contrario vuelve a solicitar un valor
+	 *         para el numero de camas
+	 */
+	public short validateBedNumbers(short bedNumbers) {
+		if (bedNumbers > 0 && bedNumbers <= 5) {
+			return bedNumbers;
+		} else {
+			view.showErrorMessage("NUMERO DE CAMAS NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 5");
+			return validateBedNumbers(view.readGraphicShort("Ingrese el número de camas:"));
+		}
+	}
+
+	/**
+	 * Metodo que valida si el numero de habitacion es valido
+	 * 
+	 * @param roomNumber
+	 * @return roomNumber si es valido, de lo contrario vuelve a solicitar un valor
+	 */
+	public short validateRoomNumber(short roomNumber, short floorNumber) {
+		if (roomNumber <= 0 || roomNumber > 10) {
+			view.showErrorMessage("NUMERO DE HABITACION NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 10");
+			return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
+		}
+		if (hospital.getRooms().isEmpty()) {
+			return roomNumber;
+		}
+		for (Room room : hospital.getRooms()) {
+			if (room.getFloorNumber() == floorNumber && room.getRoomNumber() == roomNumber) {
+				view.showErrorMessage("HABITACION YA EXISTENTE");
+				return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
+			}
+		}
+		return roomNumber;
+	}
+
+	public void createPatient() {
+		String menu = "       ...CREAR PACIENTE...      "
+				+ "\n1 - Ingrese numero de habitacion\n2 - Ingrese nombre del paciente"
+				+ "\n3 - Ingrese apellido del paciente" + "\n4 - Ingrese telefono de contacto\n5 - Salir";
+		view.showGraphicMessage(menu);
+		Patient patient = new Patient();
+		validatePatientRoomNumber(view.readGraphicShort("Ingrese numero de piso"),
+				view.readGraphicShort("Ingrese numero de habitacion:"));
+		patient.setFirstName(view.readGraphicString("Ingrese nombre del paciente:"));
+		patient.setLastName(view.readGraphicString("Ingrese apellido del paciente:"));
+		patient.setContactPhoneNumber(view.readGraphicString("Ingrese telefono de contacto:"));
+		
+	}
+
+	public short validatePatientRoomNumber(short floorNumber, short roomNumber) {
+		boolean floorExist = false;
+		int floor = 0;
+		for (int i = 0; i < hospital.getRooms().size(); i++) {
+			if (hospital.getRooms().get(i).getFloorNumber() == floorNumber) {
+				floorExist = true;
+				floor = i;
+			}
+		}
+		if (floorExist == true && hospital.getRooms().get(floor).getRoomNumber() == roomNumber) {
+			return roomNumber;
+		} else {
+			view.showErrorMessage("HABITACION NO EXISTENTE");
+			init();
+			return 0;
+		}
+	}
+
+
+
+	public void showHistorial() {
+
+	}
+
+	public void createXML() {
 
 	}
 
@@ -99,4 +190,3 @@ public class Presenter {
 		new Presenter();
 	}
 }
-
