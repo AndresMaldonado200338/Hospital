@@ -54,13 +54,21 @@ public class Presenter {
 		Room room = new Room();
 		room.setId(validateId(view.readGraphicShort("Ingrese ID:")));
 		room.setFloorNumber(validateFloorNumber(view.readGraphicShort("Ingrese número de piso:")));
-		room.setRoomNumber(validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), room.getFloorNumber()));
+		room.setRoomNumber(
+				validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), room.getFloorNumber()));
 		room.setBedNumbers(validateBedNumbers(view.readGraphicShort("Ingrese el número de camas:")));
 		hospital.addRoom(room);
 		view.showGraphicMessage(hospital.getRooms().toString());
 		init();
 	}
 
+	/**
+	 * Metodo que valida la id de una habitacion
+	 * 
+	 * @param id
+	 * @return id si es valida, de lo contrario vuelve a solicitar un valor para la
+	 *         id
+	 */
 	public short validateId(short id) {
 		if (hospital.getRooms().isEmpty()) {
 			return id;
@@ -101,7 +109,8 @@ public class Presenter {
 	 * Metodo que valida si el numero de camas es valido
 	 * 
 	 * @param bedNumbers
-	 * @return bedNumbers si es valido, de lo contrario vuelve a solicitar un valor para el numero de camas
+	 * @return bedNumbers si es valido, de lo contrario vuelve a solicitar un valor
+	 *         para el numero de camas
 	 */
 	public short validateBedNumbers(short bedNumbers) {
 		if (bedNumbers > 0 && bedNumbers <= 5) {
@@ -119,28 +128,55 @@ public class Presenter {
 	 * @return roomNumber si es valido, de lo contrario vuelve a solicitar un valor
 	 */
 	public short validateRoomNumber(short roomNumber, short floorNumber) {
-    if (roomNumber <= 0 || roomNumber > 10) {
-        view.showErrorMessage("NUMERO DE HABITACION NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 10");
-        return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
-    }
-    if (hospital.getRooms().isEmpty()) {
-        return roomNumber;
-    }
-    for (Room room : hospital.getRooms()) {
-        if (room.getFloorNumber() == floorNumber && room.getRoomNumber() == roomNumber) {
-            view.showErrorMessage("HABITACION YA EXISTENTE");
-            return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
-        }
-    }
-    return roomNumber;
-}
+		if (roomNumber <= 0 || roomNumber > 10) {
+			view.showErrorMessage("NUMERO DE HABITACION NO VALIDO, INGRESE UN NUMERO ENTRE 1 Y 10");
+			return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
+		}
+		if (hospital.getRooms().isEmpty()) {
+			return roomNumber;
+		}
+		for (Room room : hospital.getRooms()) {
+			if (room.getFloorNumber() == floorNumber && room.getRoomNumber() == roomNumber) {
+				view.showErrorMessage("HABITACION YA EXISTENTE");
+				return validateRoomNumber(view.readGraphicShort("Ingrese el número de habitación:"), floorNumber);
+			}
+		}
+		return roomNumber;
+	}
 
 	public void createPatient() {
 		String menu = "       ...CREAR PACIENTE...      "
 				+ "\n1 - Ingrese numero de habitacion\n2 - Ingrese nombre del paciente"
 				+ "\n3 - Ingrese apellido del paciente" + "\n4 - Ingrese telefono de contacto\n5 - Salir";
-
+		view.showGraphicMessage(menu);
+		Patient patient = new Patient();
+		validatePatientRoomNumber(view.readGraphicShort("Ingrese numero de piso"),
+				view.readGraphicShort("Ingrese numero de habitacion:"));
+		patient.setFirstName(view.readGraphicString("Ingrese nombre del paciente:"));
+		patient.setLastName(view.readGraphicString("Ingrese apellido del paciente:"));
+		patient.setContactPhoneNumber(view.readGraphicString("Ingrese telefono de contacto:"));
+		
 	}
+
+	public short validatePatientRoomNumber(short floorNumber, short roomNumber) {
+		boolean floorExist = false;
+		int floor = 0;
+		for (int i = 0; i < hospital.getRooms().size(); i++) {
+			if (hospital.getRooms().get(i).getFloorNumber() == floorNumber) {
+				floorExist = true;
+				floor = i;
+			}
+		}
+		if (floorExist == true && hospital.getRooms().get(floor).getRoomNumber() == roomNumber) {
+			return roomNumber;
+		} else {
+			view.showErrorMessage("HABITACION NO EXISTENTE");
+			init();
+			return 0;
+		}
+	}
+
+
 
 	public void showHistorial() {
 
