@@ -2,7 +2,6 @@ package presenter;
 
 import view.*;
 import model.*;
-import java.lang.NumberFormatException;
 
 public class Presenter {
 	Hospital hospital = new Hospital();
